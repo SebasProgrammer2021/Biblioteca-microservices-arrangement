@@ -19,18 +19,18 @@ public class LibroController {
     private final LibroServicio libroServicio;
 
     @PostMapping
-    public ResponseEntity<Respuesta<Libro>> save(@RequestBody LibroDTO libroDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body( new Respuesta<>("Libro creado correctamente", libroServicio.save(libroDTO)) );
+    public ResponseEntity<Respuesta<Libro>> save(@RequestBody LibroDTO libroDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Respuesta<>("Libro creado correctamente", libroServicio.save(libroDTO)));
     }
 
     @GetMapping
-    public ResponseEntity<Respuesta<List<Libro>>> findAll(){
-        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("", libroServicio.findAll()) );
+    public ResponseEntity<Respuesta<List<Libro>>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("", libroServicio.findAll()));
     }
 
     @GetMapping("/{isbnLibro}")
-    public ResponseEntity<Respuesta<Libro>> findAll(@PathVariable String isbnLibro){
-        return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("", libroServicio.findById(isbnLibro)) );
+    public ResponseEntity<Respuesta<Libro>> findAll(@PathVariable String isbnLibro) {
+        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("", libroServicio.findById(isbnLibro)));
     }
 
 }
