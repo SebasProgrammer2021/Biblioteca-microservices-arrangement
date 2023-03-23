@@ -3,7 +3,7 @@ package co.edu.uniquindio.biblioteca.controller;
 import co.edu.uniquindio.biblioteca.dto.PrestamoPostDTO;
 import co.edu.uniquindio.biblioteca.dto.Respuesta;
 import co.edu.uniquindio.biblioteca.model.Prestamo;
-import co.edu.uniquindio.biblioteca.service.PrestamoServicio;
+import co.edu.uniquindio.biblioteca.services.PrestamoServicio;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

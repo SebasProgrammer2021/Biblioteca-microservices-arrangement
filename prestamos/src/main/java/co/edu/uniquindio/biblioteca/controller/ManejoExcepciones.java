@@ -1,7 +1,7 @@
 package co.edu.uniquindio.biblioteca.controller;
 
 import co.edu.uniquindio.biblioteca.dto.Respuesta;
-import co.edu.uniquindio.biblioteca.service.excepciones.PrestamoNoEncontradoException;
+import co.edu.uniquindio.biblioteca.services.excepciones.PrestamoNoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
