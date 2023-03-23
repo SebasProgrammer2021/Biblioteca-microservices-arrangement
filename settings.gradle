@@ -2,4 +2,5 @@ rootProject.name = 'biblioteca'
 include 'libros'
 include 'clientes'
 include 'prestamos'
+include 'eureka-server'
 

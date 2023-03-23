@@ -1,6 +1,7 @@
 package co.edu.uniquindio.biblioteca.controller;
 
 import co.edu.uniquindio.biblioteca.dto.LibroDTO;
+import co.edu.uniquindio.biblioteca.dto.LibroIsbnDTO;
 import co.edu.uniquindio.biblioteca.dto.Respuesta;
 import co.edu.uniquindio.biblioteca.model.Libro;
 import co.edu.uniquindio.biblioteca.servicio.LibroServicio;
@@ -31,6 +32,11 @@ public class LibroController {
     @GetMapping("/{isbnLibro}")
     public ResponseEntity<Respuesta<Libro>> findAll(@PathVariable String isbnLibro) {
         return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("", libroServicio.findById(isbnLibro)));
+    }
+
+    @GetMapping("/validateBookList")
+    public ResponseEntity<Respuesta<LibroIsbnDTO>> validateBookList(@RequestBody List<String> bookIsbList) {
+        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("", libroServicio.validateBookList(bookIsbList)));
     }
 
 }
