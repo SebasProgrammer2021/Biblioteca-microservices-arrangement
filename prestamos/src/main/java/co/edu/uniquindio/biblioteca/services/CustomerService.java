@@ -5,6 +5,7 @@ import co.edu.uniquindio.biblioteca.dto.Respuesta;
 import lombok.AllArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,13 +16,14 @@ public class CustomerService {
 
     public ClienteGetDTO findCustomerByCode(String codigoCliente) {
         try {
-            Respuesta<ClienteGetDTO> respuesta = restTemplate.exchange(
-                    "http://localhost:8081/api/cliente/" + codigoCliente,
+           Respuesta<ClienteGetDTO> respuesta = restTemplate.exchange(
+                    "http://cliente-service/api/cliente/" + codigoCliente,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<Respuesta<ClienteGetDTO>>() {
                     }).getBody();
-            return respuesta != null ? respuesta.getDato() : null;
+           return respuesta != null ? respuesta.getResponse() : null;
+//            return null;
         } catch (Exception e) {
             throw new RuntimeException("Hubo un error recuperando la información del cliente -- message: " + e.getMessage());
         }

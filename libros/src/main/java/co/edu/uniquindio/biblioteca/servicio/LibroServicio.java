@@ -2,6 +2,7 @@ package co.edu.uniquindio.biblioteca.servicio;
 
 import co.edu.uniquindio.biblioteca.dto.LibroDTO;
 import co.edu.uniquindio.biblioteca.dto.LibroIsbnDTO;
+import co.edu.uniquindio.biblioteca.dto.Respuesta;
 import co.edu.uniquindio.biblioteca.model.Autor;
 import co.edu.uniquindio.biblioteca.model.Libro;
 import co.edu.uniquindio.biblioteca.repo.AutorRepo;
@@ -26,10 +27,14 @@ public class LibroServicio {
         Optional<Libro> guardado = libroRepo.findById(libro.isbn());
 
         if (guardado.isPresent()) {
-            throw new RuntimeException("El libro con el isbn " + libro.isbn() + " ya existe");
+            throw new RuntimeException("El libro con el isbn " + libro.isbn() + " ya existe.");
         }
 
         return libroRepo.save(convertir(libro));
+    }
+
+    public void delete(String bookId) {
+        libroRepo.deleteById(bookId);
     }
 
     public Libro findById(String isbn) {
@@ -46,29 +51,26 @@ public class LibroServicio {
 
     private Libro convertir(LibroDTO libro) {
 
-        List<Autor> existingBooksList = autorRepo.findAllById(libro.idAutores());
+        List<Autor> existingAuthorsList = autorRepo.findAllById(libro.idAutores());
 
-        if (existingBooksList.size() != libro.idAutores().size()) {
-
-            List<Long> idsExistentes = existingBooksList.stream().map(Autor::getId).toList();
-
-            String noEncontrados = libro.idAutores()
+        if (existingAuthorsList.size() != libro.idAutores().size()) {
+            List<Long> idsExistentes = existingAuthorsList.stream().map(Autor::getId).toList();
+            String listaAutoresNoEncontrados = libro.idAutores()
                     .stream()
                     .filter(id -> !idsExistentes.contains(id))
                     .map(Object::toString)
                     .collect(Collectors.joining(","));
 
-            throw new AuthorNotFoundException("Los existingBooksList " + noEncontrados + " no existen");
-
+            throw new AuthorNotFoundException("El autor: " + listaAutoresNoEncontrados + " no existe.");
         }
 
         Libro nuevo = Libro.builder()
-                .isbn(libro.isbn())
+                .isbn(libro.isbn().trim())
                 .nombre(libro.nombre())
                 .genero(libro.genero())
                 .fechaPublicacion(libro.fechaPublicacion())
                 .unidades(libro.unidades())
-                .autor(existingBooksList)
+                .autor(existingAuthorsList)
                 .build();
 
         return nuevo;

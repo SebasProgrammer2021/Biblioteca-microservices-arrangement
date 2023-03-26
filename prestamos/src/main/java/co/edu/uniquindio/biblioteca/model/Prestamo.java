@@ -2,6 +2,7 @@ package co.edu.uniquindio.biblioteca.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Builder
 @Data
 @AllArgsConstructor
 public class Prestamo implements Serializable {
@@ -29,5 +31,4 @@ public class Prestamo implements Serializable {
 
     @ElementCollection
     private List<String> isbnLibros;
-
 }

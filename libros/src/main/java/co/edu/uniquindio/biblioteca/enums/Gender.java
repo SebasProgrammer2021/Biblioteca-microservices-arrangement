@@ -5,5 +5,6 @@ public enum Gender {
     CIENCIA_FICCION,
     INGENIERIA,
     NOVELA,
-    HISTORIA
+    HISTORIA,
+    TERROR
 }

@@ -20,8 +20,8 @@ public class PrestamoController {
     private final PrestamoServicio prestamoServicio;
 
     @PostMapping
-    public ResponseEntity<Respuesta<Long>> save(@RequestBody PrestamoPostDTO prestamoDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Respuesta<>("Se ha registrado el préstamo", prestamoServicio.save(prestamoDTO)));
+    public ResponseEntity<Respuesta<PrestamoPostDTO>> save(@RequestBody PrestamoPostDTO prestamoDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Respuesta<>("Préstamo registrado correctamente", prestamoServicio.save(prestamoDTO)));
     }
 
     @GetMapping("/cliente/{codigoCliente}")
@@ -41,16 +41,16 @@ public class PrestamoController {
 
     @GetMapping("/{codigoPrestamo}")
     public ResponseEntity<Respuesta<Prestamo>> findById(@PathVariable long codigoPrestamo){
-        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("", prestamoServicio.findById(codigoPrestamo)));
+        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("Prestamo encontrado", prestamoServicio.findById(codigoPrestamo)));
     }
 
     @GetMapping
     public ResponseEntity<Respuesta<List<Prestamo>>> findAll(){
-        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("", prestamoServicio.findAll()));
+        return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("Prestamos encontrados", prestamoServicio.findAll()));
     }
 
     @PutMapping("/{codigoPrestamo}")
-    public ResponseEntity<Respuesta<Long>> update(@PathVariable long codigoPrestamo, @RequestBody PrestamoPostDTO prestamoPostDTO){
+    public ResponseEntity<Respuesta<PrestamoPostDTO>> update(@PathVariable long codigoPrestamo, @RequestBody PrestamoPostDTO prestamoPostDTO){
         return ResponseEntity.status(HttpStatus.OK).body(new Respuesta<>("Se ha actualizado el préstamo", prestamoServicio.update(codigoPrestamo, prestamoPostDTO)));
     }
 

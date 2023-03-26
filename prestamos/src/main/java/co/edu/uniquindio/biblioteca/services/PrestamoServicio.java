@@ -4,6 +4,7 @@ import co.edu.uniquindio.biblioteca.dto.*;
 import co.edu.uniquindio.biblioteca.model.Prestamo;
 import co.edu.uniquindio.biblioteca.repo.PrestamoRepo;
 import co.edu.uniquindio.biblioteca.services.excepciones.PrestamoNoEncontradoException;
+import co.edu.uniquindio.biblioteca.services.utils.loan.LoanUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,24 +20,10 @@ import java.util.List;
 public class PrestamoServicio {
     private final CustomerService customerService;
     private final BookService bookService;
+    private final LoanUtils loanUtils;
     private final PrestamoRepo prestamoRepo;
 
-    public long save(PrestamoPostDTO prestamoDTO) {
-        ClienteGetDTO cliente = customerService.findCustomerByCode(prestamoDTO.clienteID());
-        log.info("cliente {}", cliente);
 
-        Prestamo prestamo = new Prestamo();
-        prestamo.setCodigoCliente(cliente.codigo());
-        prestamo.setFechaPrestamo(LocalDateTime.now());
-
-        /*TODO crear una validación para comprobar que los ISBN de los libros sí existen */
-        String mensaje = bookService.findLibrosByIbsn(prestamoDTO.isbnLibros());
-        System.out.println(mensaje);
-        prestamo.setIsbnLibros(prestamo.getIsbnLibros());
-        prestamo.setFechaDevolucion(prestamoDTO.fechaDevolucion());
-
-        return prestamoRepo.save(prestamo).getCodigo();
-    }
 
     public List<Prestamo> findByCodigoCliente(String codigoCliente) {
 
@@ -76,17 +63,34 @@ public class PrestamoServicio {
         return prestamoRepo.lendingCount(isbn);
     }
 
-    public long update(long codigoPrestamo, PrestamoPostDTO prestamoPostDTO) {
-        Prestamo prestamo = prestamoRepo.findById(codigoPrestamo).orElseThrow(() -> new PrestamoNoEncontradoException("No existe un préstamo con el código: " + codigoPrestamo));
-
-        /*TODO crear una validación para comprobar que los ISBN de los libros sí existen */
-
-        prestamo.setIsbnLibros(prestamoPostDTO.isbnLibros());
+    public PrestamoPostDTO save(PrestamoPostDTO prestamoDTO) {
+        ClienteGetDTO cliente = customerService.findCustomerByCode(prestamoDTO.clienteID());
+        Prestamo prestamo = new Prestamo();
+        prestamo.setCodigoCliente(cliente.codigo());
         prestamo.setFechaPrestamo(LocalDateTime.now());
-        prestamo.setFechaDevolucion(prestamoPostDTO.fechaDevolucion());
-
-        return prestamo.getCodigo();
+        prestamo.setFechaDevolucion(prestamoDTO.fechaDevolucion());
+        String mensaje = bookService.findLibrosByIbsn(prestamoDTO.isbnLibros());
+        System.out.println(mensaje);
+        if (mensaje != "") {
+            throw new RuntimeException("No se pudo registrar el prestamo porque los isbns: [" + mensaje + "] no fueron encontrados.");
+        }
+        prestamo.setIsbnLibros(prestamoDTO.isbnLibros());
+        return loanUtils.transformLoanToLoanDTO(prestamoRepo.save(prestamo));
     }
 
+    public PrestamoPostDTO update(long codigoPrestamo, PrestamoPostDTO prestamoPostDTO) {
+        Prestamo prestamo = prestamoRepo.findById(codigoPrestamo).orElseThrow(() -> new PrestamoNoEncontradoException("No existe un préstamo con el código: " + codigoPrestamo));
+        String mensaje = bookService.findLibrosByIbsn(prestamoPostDTO.isbnLibros());
+        System.out.println(mensaje);
+        if (mensaje != "") {
+            throw new RuntimeException("No se pudo registrar el prestamo porque los isbns: [" + mensaje + "] no fueron encontrados.");
+        }
 
+        prestamo.setIsbnLibros(prestamoPostDTO.isbnLibros());
+        prestamo.setFechaDevolucion(prestamoPostDTO.fechaDevolucion());
+
+        Prestamo nuevo = loanUtils.transformPrestamoPostDtoToPrestamo(prestamoPostDTO, codigoPrestamo, prestamo.getFechaPrestamo());
+        nuevo.setCodigo(codigoPrestamo);
+        return loanUtils.transformLoanToLoanDTO(prestamoRepo.save(nuevo));
+    }
 }

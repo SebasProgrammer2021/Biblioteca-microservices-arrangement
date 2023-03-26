@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Respuesta<T>{
 
-    private String mensaje;
-    private T dato;
+    private String message;
+    private T response;
 
     public Respuesta(String mensaje) {
-        this.mensaje = mensaje;
+        this.message = mensaje;
     }
 }
