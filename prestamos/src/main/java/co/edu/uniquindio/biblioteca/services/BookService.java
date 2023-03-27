@@ -22,7 +22,7 @@ public class BookService {
         try {
             HttpEntity<List<String>> entity = new HttpEntity<>(ibsns);
             Respuesta<LibroIsbnDTO> response = restTemplate.exchange(
-                    "http://localhost:8083/api/libro/validateBookList",
+                    "http://libro-service/api/libro/validateBookList",
                     HttpMethod.POST,
                     entity,
                     new ParameterizedTypeReference<Respuesta<LibroIsbnDTO>>() {
