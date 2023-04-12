@@ -1,0 +1,82 @@
+version: '3.1'
+
+services:
+
+  db:
+    container_name: server-mysql
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: rodri
+    volumes:
+      - './volumenes/postgres:/var/lib/mysql'
+    hostname: server-mysql
+
+  adminer:
+    container_name: server-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    hostname: server-adminer
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rodri
+    ports:
+      - '27017:27017'
+    volumes:
+      - './volumenes/mongodb:/data/db'
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8085:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rodri
+      ME_CONFIG_MONGODB_URL: mongodb://root:rodri@mongo:27017/
+
+  eureka:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rodri
+
+  clientes:
+    image: cliente-service
+    restart: always
+
+  libros:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rodri
+
+  prestamos:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rodri
+
+  gateway:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8085:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rodri
+      ME_CONFIG_MONGODB_URL: mongodb://root:rodri@mongo:27017/
